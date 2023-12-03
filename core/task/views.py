@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, request
+from flask import render_template, redirect, url_for, request, flash
 from flask_login import login_required, current_user
 from ..models.todo import Todo, Category
 from . import task
@@ -56,7 +56,7 @@ def tasks():
             )
             db.session.add(todo)
             db.session.commit()
-            # flash("Congratulations, you just added a new note")
+            flash("Congratulations, you just added a new note")
             # Refreshes the page
             return redirect(url_for("task.tasks"))
 
