@@ -26,11 +26,13 @@ class RegistrationForm(FlaskForm):
     )
     submit = SubmitField("Register")
 
+    # To confirm if username is not already in the database
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
         if user is not None:
             raise ValidationError("Username already in use.")
 
+    # To confirm if email is not already in the database
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:

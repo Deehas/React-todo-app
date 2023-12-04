@@ -33,12 +33,15 @@ def login():
         if user is None or not user.check_password(form.password.data):
             nologin = True
         else:
+            # If next page parameter exist in url, redirect to the url
+            # this means the user was redirected to the login page from the original route
             login_user(user, remember=form.remember_me.data)
             next_page = request.args.get("next")
             if not next_page or urlsplit(next_page).netloc != "":
+                # else redirect to the task management page
                 next_page = url_for("task.tasks")
             return redirect(next_page)
-        
+
     return render_template("login.html", title="Sign In", form=form, message=nologin)
 
 

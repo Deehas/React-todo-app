@@ -10,8 +10,11 @@ from datetime import datetime
 @login_required
 def homepage():
     user = current_user
+    # Query todo table for todos linked to logged in user
     todo = Todo.query.filter_by(author=user)
+    # Get current Date and Time
     date = datetime.now()
+    # Format datetime to String
     now = date.strftime("%Y-%m-%d")
 
     category1 = Category.query.get(1)
