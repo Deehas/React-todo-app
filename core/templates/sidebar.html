@@ -12,8 +12,8 @@
     </li>
     <li>
       <a
-        class="{% if request.url_rule.endpoint == 'task.tasks' %} active {% endif %}"
-        href="{{url_for('task.tasks')}}"
+        class="{% if request.url_rule.endpoint == 'task.manage_task' %} active {% endif %}"
+        href="{{url_for('task.manage_task')}}"
         ><i class="fa fa-tasks"></i>Task Management</a
       >
     </li>
