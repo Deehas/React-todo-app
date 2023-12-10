@@ -1,10 +1,11 @@
+import os
 from flask import Flask
-from config import Configuration
-from flask_sqlalchemy import SQLAlchemy
+from config import app_config
 from flask_migrate import Migrate
 from core.models.todo import db
 from core.task import views
 from flask_login import LoginManager
+
 
 app = Flask(__name__)
 login = LoginManager()
@@ -12,7 +13,7 @@ login = LoginManager()
 
 def create_app():
     # create and configure the app
-    app.config.from_object(Configuration)
+    app.config.from_object(app_config[os.environ.get("APP_SETTINGS")])
     db.init_app(app)
     login.init_app(app)
     migrate = Migrate(app, db)
