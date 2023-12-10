@@ -8,28 +8,56 @@
         <span class="welcome-text">Manage Your ToDo List</span>
       </div>
 
+      {% with messages = get_flashed_messages(with_categories=true) %} 
+        {% if messages %} 
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" role="alert">
+              <span class="closebtns" onclick="this.parentElement.style.display='none';"
+                >&times;</span
+              >{{message}}
+            </div>
+          {% endfor %} 
+        {% endif %} 
+      {% endwith %}
+
       <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <div class="inputContainer Task">
-          {{ form.title.label }}<br />
+          <div>
+            {{ form.title.label }}
+            <span style="color: red">*</span>
+          </div>
+          <br />
           {{ form.title(size=20) }} {% for error in form.title.errors %}
           <span style="color: red">[{{ error }}]</span>
           {% endfor %}
         </div>
         <div class="inputContainer choice">
-          {{ form.category.label}}<br />
+          <div>
+            {{ form.category.label}}
+            <span style="color: red">*</span>
+          </div>
+          <br />
           {{ form.category}} {% for error in form.category.errors %}
           <span style="color: red">[{{ error }}]</span>
           {% endfor %}
         </div>
         <div class="inputContainer date">
-          {{ form.date.label }}<br />
+          <div>
+            {{ form.date.label }}
+            <span style="color: red">*</span>
+          </div>
+          <br />
           {{ form.date }} {% for error in form.date.errors %}
           <span style="color: red">[{{ error }}]</span>
           {% endfor %}
         </div>
         <div class="inputContainer time">
-          {{ form.time.label }}<br />
+          <div>
+            {{ form.time.label }}
+            <span style="color: red">*</span>
+          </div>
+          <br />
           {{ form.time }} {% for error in form.time.errors %}
           <span style="color: red">[{{ error }}]</span>
           {% endfor %}
@@ -50,7 +78,7 @@
       <!-- End Task Delete error alert -->
 
       {% for todo in todos %}
-      <form action="" method="post">
+      <form action="{{url_for("task.delete_task")}}" method="post">
         {{ form.hidden_tag() }}
         <!-- csrf token for security -->
 
