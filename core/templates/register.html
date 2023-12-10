@@ -1,6 +1,6 @@
 {% extends "base.html" %} {% block content %}
 
-<a class="brand-logo" href="{{ url_for('home.index') }}">
+<a class="brand-logo" href="{{ url_for('index') }}">
   <img class="logo" src="{{ url_for('static', filename='Logo.svg') }}" />
   <div class="brand-logo-name"><strong> ToDo </strong></div>
 </a>
@@ -12,29 +12,49 @@
       <h4 class="has-text-centered mb-5 is-size-3">Register</h4>
     </div>
 
+    {% with messages = get_flashed_messages(with_categories=true) %} 
+      {% if messages %} 
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}" role="alert">
+            <span class="closebtns" onclick="this.parentElement.style.display='none';"
+              >&times;</span
+            >{{message}}
+          </div>
+        {% endfor %} 
+      {% endif %} 
+    {% endwith %}
+    
     <p>
-      {{ form.username.label(class="label") }}<br />
+      {{ form.username.label(class="label") }}
+      <span style="color: red">*</span>
+      <br />
       {{ form.username(size=32) }}<br />
       {% for error in form.username.errors %}
       <span style="color: red">[{{ error }}]</span>
       {% endfor %}
     </p>
     <p>
-      {{ form.email.label(class="label") }}<br />
+      {{ form.email.label(class="label") }}
+      <span style="color: red">*</span>
+      <br />
       {{ form.email(size=64) }}<br />
       {% for error in form.email.errors %}
       <span style="color: red">[{{ error }}]</span>
       {% endfor %}
     </p>
     <p>
-      {{ form.password.label(class="label") }}<br />
+      {{ form.password.label(class="label") }}
+      <span style="color: red">*</span>
+      <br />
       {{ form.password(size=32) }}<br />
       {% for error in form.password.errors %}
       <span style="color: red">[{{ error }}]</span>
       {% endfor %}
     </p>
     <p>
-      {{ form.password2.label(class="label") }}<br />
+      {{ form.password2.label(class="label") }}
+      <span style="color: red">*</span>
+      <br />
       {{ form.password2(size=32) }}<br />
       {% for error in form.password2.errors %}
       <span style="color: red">[{{ error }}]</span>
