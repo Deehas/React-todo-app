@@ -25,40 +25,39 @@
       href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
     />
 
-    {% if request.url_rule.endpoint != 'index' %}   
-        {% if request.url_rule.endpoint != 'auth.login' %} 
-            {% if request.url_rule.endpoint != 'auth.register' %} 
-               <script src="{{ url_for('static', filename='sidebar.js') }}" defer></script>
-            {% endif %}
-        {% endif %}
-    {% endif %}
+    {% if request.url_rule.endpoint != 'index' 
+      and request.url_rule.endpoint != 'auth.login' 
+        and request.url_rule.endpoint != 'auth.register' %}
+          <script src="{{ url_for('static', filename='sidebar.js') }}" defer></script>
+    {% endif %} 
+    
     {% if title %}
-    <title>{{ title }}</title>
+      <title>{{ title }}</title>
     {% else %}
-    <title>Todo List</title>
+      <title>Todo List</title>
     {% endif %}
   </head>
   <body>
-        <!-- This prevents the WRAPPER class from activating on the main, sign in and register pages -->
-        {% if request.url_rule.endpoint != 'index' %}   
-            {% if request.url_rule.endpoint != 'auth.login' %} 
-                {% if request.url_rule.endpoint != 'auth.register' %} 
-                    <div class="wrapper">  
-                {% endif %}
-            {% endif %}
-        {% endif %}
-                
-        <!-- This prevents the sidebar from showing up on the main, sign in and register pages -->
-        {% if request.url_rule.endpoint != 'index' %}   
-            {% if request.url_rule.endpoint != 'auth.login' %} 
-                {% if request.url_rule.endpoint != 'auth.register' %} 
-                            
-                    {% include 'sidebar.html' %}
+    <!-- This prevents the WRAPPER class from activating on the main, sign in and register pages -->
+    {% if request.url_rule.endpoint != 'index' 
+      and request.url_rule.endpoint != 'auth.login' 
+        and request.url_rule.endpoint != 'auth.register' %}
+          <div class="wrapper">
+    {% endif %}
 
-                {% endif %}
-            {% endif %}
-        {% endif %}
-        <!-- End of sidebar  -->        
-        {% block content %} {% endblock content%}
+      <!-- This prevents the sidebar from showing up on the main, sign in and register pages -->
+      {% if request.url_rule.endpoint != 'index' 
+        and request.url_rule.endpoint != 'auth.login' 
+          and request.url_rule.endpoint != 'auth.register' %} 
+          {%include 'sidebar.html' %} 
+      {% endif %}
+      <!-- End of sidebar  -->
+      {% block content %} {% endblock content%} 
+      
+      {% if request.url_rule.endpoint != 'index' 
+        and request.url_rule.endpoint != 'auth.login' 
+          and request.url_rule.endpoint != 'auth.register' %}
+          </div>
+      {% endif %}
   </body>
 </html>
