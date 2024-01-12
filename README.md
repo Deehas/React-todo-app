@@ -1,6 +1,6 @@
-# flask-todo-app
+# flask-todo-api
 
-This is a fully functional Todolist application built using the Flask Framework.
+This is a fully functional Todolist api built using the Flask Framework.
 
 ## How to run
 - Clone the repository
