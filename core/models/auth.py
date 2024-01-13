@@ -14,6 +14,14 @@ class User(UserMixin, db.Model):
     # to get all todos assigned to the user
     todo = db.relationship("Todo", backref="author", lazy="dynamic")
 
+    def to_dict(self):
+        data = {
+            "id": self.id,
+            "username": self.username,
+            "email": self.email,
+        }
+        return data
+
     def __repr__(self):
         return "<User {}>".format(self.username)
 
