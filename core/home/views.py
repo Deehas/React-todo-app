@@ -4,18 +4,24 @@ from ..models.todo import Todo
 from ..models.todo import Category
 from . import home
 from datetime import datetime
+from flask_jwt_extended import (
+    jwt_required,
+)
 
 
-@home.route("/home")
-@login_required
+@home.route("/")
+@jwt_required()
 def homepage():
     no_of_Task_ID_Business = 0
     no_of_Task_ID_Personal = 0
     no_of_Task_ID_Other = 0
+    todos = []
     try:
         user = current_user
         # Query todo table for todos linked to logged in user
-        todo = Todo.query.filter_by(author=user).order_by(Todo.date)
+        all_todos = Todo.query.filter_by(author=user).order_by(Todo.date).all()
+        for todo in all_todos:
+            todos.append(todo.to_dict())
         # Get current Date and Time
         date = datetime.now()
         # Format date to String
@@ -39,18 +45,17 @@ def homepage():
         no_of_Task_ID_Other = Task_ID_Other.count()
 
     except Exception as e:
-        flash("Loading homepage failed, please try again.", category="danger")
+        return {"msg": "Loading homepage failed, please try again."}, 401
 
-    return render_template(
-        "home.html",
-        title="Home Page",
-        todo=todo,
-        no_of_business_tasks=no_of_Task_ID_Business,
-        no_of_personal_tasks=no_of_Task_ID_Personal,
-        no_of_other_tasks=no_of_Task_ID_Other,
-        category_i=category1,
-        category_ii=category2,
-        category_iii=category3,
-        DateNow=now,
-        TimeNow=currentTime,
-    )
+    response = {
+        "todos": todos,
+        "no_of_business_tasks": no_of_Task_ID_Business,
+        "no_of_personal_tasks": no_of_Task_ID_Personal,
+        "no_of_other_tasks": no_of_Task_ID_Other,
+        "category_i_name": category1.name,
+        "category_ii_name": category2.name,
+        "category_iii_name": category3.name,
+        "DateNow": now,
+        "TimeNow": currentTime,
+    }
+    return response, 200
