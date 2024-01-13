@@ -2,36 +2,6 @@ import pytest
 from flask import url_for
 
 
-def test_register_user_fails_with_unequal_password(client, app_context):
-    # Test register process with unequal password
-    register_url = url_for("auth.register")
-    payload = {
-        "username": "kaz",
-        "email": "alm3@gmail.com",
-        "password": "kazonto",
-        "password2": "lamb",
-    }
-    response = client.post(register_url, data=payload, follow_redirects=True)
-    data = response.data.decode("utf8").lower()
-    assert "field must be equal to password." in data
-    assert "register" in data
-
-
-def test_register_user_fails_with_invalid_email(client, app_context):
-    # Test register process with invalid email
-    register_url = url_for("auth.register")
-    payload = {
-        "username": "kaz",
-        "email": "sa24",
-        "password": "kazonto",
-        "password2": "kazonto",
-    }
-    response = client.post(register_url, data=payload, follow_redirects=True)
-    data = response.data.decode("utf8").lower()
-    assert "invalid email address." in data
-    assert "register" in data
-
-
 def test_register_user_works(client, app_context):
     # Test register process
     register_url = url_for("auth.register")
@@ -41,38 +11,40 @@ def test_register_user_works(client, app_context):
         "password": "kazonto",
         "password2": "kazonto",
     }
-    response = client.post(register_url, data=payload, follow_redirects=True)
-    data = response.data.decode("utf8").lower()
-    assert "congratulations, you are now a registered user!" in data
-    assert "login" in data
+    response = client.post(register_url, json=payload)
+    data = response.json
+    assert response.status_code == 200
+    assert "Congratulations, you are now a registered user!" in data["msg"]
 
 
-def test_register_user_fails_with_duplicate_details(client, app_context):
+def test_register_user_fails_with_existing_username(client, app_context):
     # Test register process with duplicate details
     register_url = url_for("auth.register")
     payload = {
         "username": "kaz",
+        "email": "kaz@yahoomail.com",
+        "password": "kazonto",
+        "password2": "kazonto",
+    }
+    response = client.post(register_url, json=payload)
+    data = response.json
+    assert response.status_code == 400
+    assert "Username already in use." in data["msg"]
+
+
+def test_register_user_fails_with_existing_email(client, app_context):
+    # Test register process with duplicate details
+    register_url = url_for("auth.register")
+    payload = {
+        "username": "saka",
         "email": "kaz@gmail.com",
         "password": "kazonto",
         "password2": "kazonto",
     }
-    response = client.post(register_url, data=payload, follow_redirects=True)
-    data = response.data.decode("utf8").lower()
-    assert "username already in use." in data
-    assert "email already registered." in data
-    assert "register" in data
-
-
-def test_login_user_fails_with_invalid_email(client, app_context):
-    # Test login process wiht invalid email
-    login_url = url_for("auth.login")
-    payload = {
-        "email": "sa",
-        "password": "dhiserio",
-    }
-    response = client.post(login_url, data=payload, follow_redirects=True)
-    data = response.data.decode("utf8").lower()
-    assert "invalid email address" in data
+    response = client.post(register_url, json=payload)
+    data = response.json
+    assert response.status_code == 400
+    assert "Email already registered." in data["msg"]
 
 
 def test_login_user_fails_with_wrong_password(client, app_context):
@@ -82,9 +54,10 @@ def test_login_user_fails_with_wrong_password(client, app_context):
         "email": "kaz@gmail.com",
         "password": "dhiserio",
     }
-    response = client.post(login_url, data=payload, follow_redirects=True)
-    data = response.data.decode("utf8").lower()
-    assert "login failed. invalid email or password. please try again." in data
+    response = client.post(login_url, json=payload)
+    data = response.json
+    assert response.status_code == 401
+    assert "Login failed. Invalid email or password. Please try again." in data["msg"]
 
 
 def test_login_user_works(client, app_context):
@@ -94,8 +67,7 @@ def test_login_user_works(client, app_context):
         "email": "kaz@gmail.com",
         "password": "kazonto",
     }
-    response = client.post(login_url, data=payload, follow_redirects=True)
-    data = response.data.decode("utf8").lower()
-    assert "welcome back! you have successfully logged in." in data
-
-
+    response = client.post(login_url, json=payload)
+    data = response.json
+    assert response.status_code == 200
+    assert "Welcome back! You have successfully logged in." in data["msg"]

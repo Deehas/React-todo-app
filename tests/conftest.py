@@ -3,6 +3,7 @@ import pytest
 from core import create_app, db
 from config import basedir
 from core.models.todo import Category
+from core.models.auth import User
 
 
 os.environ["APP_SETTINGS"] = "test"
@@ -50,3 +51,13 @@ def category1(test_db):
     test_db.session.commit()
 
     yield category1
+
+
+@pytest.fixture(scope="session", autouse=True)
+def test_user(test_db):
+    test_user = User(username="kazman", email="kaz@hotmail.com")
+
+    test_db.session.add(test_user)
+    test_db.session.commit()
+
+    yield test_user
